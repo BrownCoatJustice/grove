@@ -1,3 +1,4 @@
 .editorconfig
 target/
-grove.code-workspace
+*.code-workspace
+src/main/java/org/duckdns/habism/._*.*
