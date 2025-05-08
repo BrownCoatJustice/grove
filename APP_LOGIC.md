@@ -43,7 +43,7 @@ Logic for how to stop Pomodoro sessions...
 ```mermaid
 flowchart TD
     A[Start Focus Session] --> B[Start Scanner Input Listener]
-    B --> C{EOFDetected? (^D or ^Z)}
+    B --> C{EOF Detected?}
     C -->|No| B
     C -->|Yes| D[Unexpected Error Triggered]
     D --> E[Stop Program Execution]
