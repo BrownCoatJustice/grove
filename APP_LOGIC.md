@@ -43,11 +43,11 @@ Logic for how to stop Pomodoro sessions...
 ```mermaid
 flowchart TD
     A[Start Focus Session] --> B[Start Scanner Input Listener]
-    B --> C{EOF Detected? (^D or ^Z)}
+    B --> C{EOF Detected?}
     C -->|No| B
     C -->|Yes| D[Unexpected Error Triggered]
     D --> E[Stop Program Execution]
-    E --> F[Calculate totalTimeFocused:<br/>(sessionMins - timeRemaining) + sessionCount * sessionMins]
+    E --> F[Calculate totalTimeFocused = remTimeInSesh + sessionCount * sessionMins]
     F --> G[Display Focus Stats]
     G --> H[End]
 ```
