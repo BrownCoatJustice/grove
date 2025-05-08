@@ -108,6 +108,7 @@ public class TimeKeeper {
             }
         } else {
             System.out.println("[Single] Session completed. Good job!");
+            stopSession();
         }
     }
 
