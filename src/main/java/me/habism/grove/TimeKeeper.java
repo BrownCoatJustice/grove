@@ -1,9 +1,12 @@
-package org.duckdns.habism;
+package me.habism.grove;
 
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimeKeeper {
+
+    private static volatile boolean isTerminated = false;
 
     private int seshMins = 25;
     private int sBreakMins = 5;
@@ -14,20 +17,24 @@ public class TimeKeeper {
     private int remainingTime;
     private Timer timer;
 
+    private static Scanner eofScanner;
+
     public void setPomodoroMode(boolean isPomodoro) {
         this.isPomodoro = isPomodoro;
     }
 
     public void setSeshMins(int seshMins) {
-        if (seshMins > 999)
+        if (seshMins > 999) {
             throw new IllegalArgumentException("Session duration too long.");
+        }
         this.seshMins = seshMins;
         System.out.println("Session time set to " + seshMins + " minutes.");
     }
 
     public void setShortBreak(int mins) {
-        if (mins > seshMins || mins > 999)
+        if (mins > seshMins || mins > 999) {
             throw new IllegalArgumentException("Invalid short break duration.");
+        }
         this.sBreakMins = mins;
         System.out.println("Short break time set to " + mins + " minutes.");
     }
@@ -46,8 +53,9 @@ public class TimeKeeper {
             }
         }
 
-        if (mins > 999)
+        if (mins > 999) {
             throw new IllegalArgumentException("Invalid long break duration.");
+        }
         this.lBreakMins = mins;
         System.out.println("Long break time set to " + mins + " minutes.");
     }
@@ -63,8 +71,12 @@ public class TimeKeeper {
     }
 
     private void startSession() {
+        if (isTerminated) {
+            System.out.println("[Session aborted] Termination signal received before session start.");
+            return;
+        }
         remainingTime = seshMins * 60;
-        System.out.println("Session started for " + seshMins + " minutes.");
+        System.out.println("Session started for " + seshMins + " minutes. You can always stop by pressing Ctrl+D");
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -100,6 +112,10 @@ public class TimeKeeper {
     }
 
     private void startBreak(int breakMinutes) {
+        if (isTerminated) {
+            System.out.println("[Break aborted] Termination signal received before break start.");
+            return;
+        }
         remainingTime = breakMinutes * 60;
         System.out.println("\nBreak started for " + breakMinutes + " minutes.");
 
@@ -118,5 +134,40 @@ public class TimeKeeper {
                 }
             }
         }, 0, 1000);
+
+    }
+
+    // see APP_LOGIC.md#Stop Pomodor Logic or smth
+    public void stopSession() {
+        isTerminated = true;
+
+        if (timer != null) {
+            this.timer.cancel();
+        }
+
+        int currentFocusedTime = (seshMins * 60) - remainingTime;
+        int totalSecondsFocused = (sessionCount * seshMins * 60) + currentFocusedTime;
+        int minutesFocused = totalSecondsFocused / 60;
+
+        System.out.println("\nSession manually stopped!");
+        System.out.println("Total time focused: " + minutesFocused + " minutes");
+
+        // Optional feedback messages
+        if (minutesFocused >= 50) {
+            System.out.println("Beast mode. Big focus.");
+        } else if (minutesFocused >= 25) {
+            System.out.println("Solid focus! Keep it up.");
+        } else {
+            System.out.println("Every bit counts. Tomorrow’s another chance.");
+        }
+    }
+
+    public void watchForEOF() {
+        eofScanner = new Scanner(System.in);
+        while (eofScanner.hasNextLine()) {
+            eofScanner.nextLine();
+        }
+        System.out.println("EOF received. Stopping...");
+        stopSession();
     }
 }
