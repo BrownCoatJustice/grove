@@ -2,3 +2,5 @@
 target/
 *.code-workspace
 src/main/java/org/duckdns/habism/._*.*
+test.class
+test.java

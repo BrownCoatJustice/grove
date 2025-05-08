@@ -1,4 +1,4 @@
-package org.duckdns.habism;
+package me.habism.grove;
 
 import java.util.Scanner;
 
@@ -10,6 +10,10 @@ public final class App {
 
     public static void main(String[] args) {
         System.out.println("Hello World! This is 'grove'!");
+        init();
+    }
+    
+    static void init() {
         System.out.println("Choose a mode:\n1. Pomodoro\n2. Single Session\nType 1 or 2: ");
 
         byte mode = getModeSelection();
@@ -28,8 +32,8 @@ public final class App {
         } else {
             keeper.startSingleSession();
         }
-
-        sc.close();
+        
+        new Thread(() -> keeper.watchForEOF()).start();
     }
 
     private static byte getModeSelection() {
@@ -56,21 +60,27 @@ public final class App {
     }
 
     private static int promptForTime(String message) {
-        int input = 0;
-        while (input <= 0) {
+        while (true) {
             try {
                 System.out.print(message);
-                input = sc.nextInt();
+                int input = sc.nextInt();
                 sc.nextLine(); // consume newline
-                System.out.print("Press ENTER/RETURN to confirm: ");
-                sc.nextLine();
-                if (input <= 0)
-                    throw new IllegalArgumentException();
+
+                if (input <= 0) {
+                    System.out.println("Please enter a number greater than 0.");
+                    continue;
+                }
+
+                System.out.print("Press ENTER to confirm, or type anything and press ENTER to re-enter: ");
+                if (!sc.nextLine().isEmpty()) {
+                    continue; // user wants to re-enter
+                }
+
+                return input; // confirmed
             } catch (Exception e) {
-                System.out.println("Invalid input. Please enter a positive number.");
-                sc.nextLine(); // clear input buffer
+                System.out.println("Invalid input. Please enter a valid number.");
+                sc.nextLine(); // clear buffer
             }
         }
-        return input;
     }
 }
