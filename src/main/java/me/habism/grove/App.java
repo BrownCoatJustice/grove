@@ -32,10 +32,8 @@ public final class App {
         } else {
             keeper.startSingleSession();
         }
-        // TODO: Fix the premature EOF problem.
-        new Thread(() -> keeper.watchForEOF()).start();
         
-        sc.close();
+        new Thread(() -> keeper.watchForEOF()).start();
     }
 
     private static byte getModeSelection() {
