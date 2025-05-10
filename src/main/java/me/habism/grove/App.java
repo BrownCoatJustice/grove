@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public final class App {
 
-    private static final Scanner sc = new Scanner(System.in);
+    public static final Scanner sc = new Scanner(System.in);
     private static final TimeKeeper keeper = new TimeKeeper();
     private static boolean isPomodoro;
 

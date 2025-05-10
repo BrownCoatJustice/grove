@@ -3,6 +3,7 @@ package me.habism.grove;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import static me.habism.grove.App.sc;
 
 public class TimeKeeper {
 
@@ -95,7 +96,7 @@ public class TimeKeeper {
     }
 
     private void onSessionComplete() {
-        System.out.println("Session completed!");
+        // System.out.println("Session completed!");
 
         if (isPomodoro) {
             sessionCount++;
@@ -108,7 +109,7 @@ public class TimeKeeper {
             }
         } else {
             System.out.println("[Single] Session completed. Good job!");
-            stopSession();
+            sc.close();
         }
     }
 
