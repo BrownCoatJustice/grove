@@ -1,0 +1,9 @@
+.editorconfig
+target/
+*.code-workspace
+test.class
+test.java
+/src/experimental
+/data
+dependency-reduced-pom.xml
+nbactions.xml
